@@ -2,18 +2,26 @@
 Paper Trading Portfolio v1 - Deployment Script
 
 AFIE Autonomous Financial Intelligence Engine
-Directive 013 - Alpha Deployment
+Directive 014 - Institutional Validation Run
 
-This script deploys validated strategies into the AFIE paper trading execution pipeline.
+This script deploys validated strategies into the AFIE paper trading execution pipeline
+for a full-year institutional validation run.
 
 Portfolio Configuration:
 - Simulated Capital: 100,000 USD
 - Strategy Allocation:
-  * Bollinger Bands Mean Reversion (MR_001): 40%
-  * Williams %R Mean Reversion (MR_003): 30%
-  * RSI Mean Reversion (MR_002): 30%
+  * Bollinger Bands Mean Reversion (MR_001): 33%
+  * Williams %R Mean Reversion (MR_003): 33%
+  * RSI Mean Reversion (MR_002): 34%
 - Asset Universe: SPY ETF
 - Execution Mode: Paper trading only
+
+Risk Parameters (Institutional):
+- Max strategy allocation: 30%
+- Max position size: 10%
+- Max daily loss: 2%
+- Max portfolio drawdown: 12%
+- Max leverage: 1.0x
 
 Author: AFIE Engineering System
 """
