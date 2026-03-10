@@ -150,7 +150,7 @@ class GlobalRiskManager:
         self.metrics_history.append(metrics)
         return metrics
     
-    def check_limits(self, metrics: RiskMetrics) -> Dict[str, Any]:
+    def check_limits(self, metrics: RiskMetrics, portfolio_state: Dict = None) -> Dict[str, Any]:
         """Check if metrics violate limits."""
         violations = []
         warnings = []
@@ -169,8 +169,15 @@ class GlobalRiskManager:
         if metrics.max_asset_exposure > limits.max_single_asset_exposure:
             warnings.append(f"Asset exposure {metrics.max_asset_exposure:.1%} approaching limit")
         
-        # Check drawdown
-        if metrics.current_drawdown > limits.max_drawdown_limit:
+        # Check drawdown - use portfolio_state if available
+        if portfolio_state and "total_value" in portfolio_state:
+            initial_capital = getattr(self, 'initial_capital', 100000)
+            total_value = portfolio_state.get("total_value", initial_capital)
+            if total_value < initial_capital:
+                drawdown = (initial_capital - total_value) / initial_capital
+                if drawdown > limits.max_drawdown_limit:
+                    violations.append(f"Drawdown {drawdown:.1%} exceeds limit")
+        elif metrics.current_drawdown > limits.max_drawdown_limit:
             violations.append(f"Drawdown {metrics.current_drawdown:.1%} exceeds limit")
         
         # Check daily loss
@@ -339,7 +346,7 @@ class ExecutionGuard:
         if pending >= limits.max_pending_orders:
             return {"approved": False, "reason": "Max pending orders reached"}
         
-        # Check leverage
+        # Check leverage - only if leverage is already at or above max
         leverage = portfolio_state.get("leverage", 1.0)
         if leverage >= limits.max_portfolio_leverage:
             return {"approved": False, "reason": "Max leverage reached"}
