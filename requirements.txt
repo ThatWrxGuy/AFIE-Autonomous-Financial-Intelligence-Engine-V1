@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+ray
+langchain
+redis
+psycopg2-binary
+faiss-cpu
+pydantic
+asyncio
+uuid
+time
+typing
+abc
